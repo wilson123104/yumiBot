@@ -44,15 +44,19 @@ async def on_message(message: discord.message.Message):
         last_seconds = (last_min - int(last_min)) * 60
         channel = client.get_channel(message.channel.id)
         lastDate = datetime.today().strftime("%Y%m%d")
-        if last_date > 0:
+        if last_date > 2:
           await channel.send(
             f'<@{target}> 你已經有 {int(last_date)}天 {int(last_hour)}小時 {int(last_min)}分鐘 {int(last_seconds)}秒沒有直播了，我們都很想你，不如開個台吧!'
           )
         break
 
-@bot.command(guild = discord.Object(id=guild_id), name = 'tester', description='testing') #guild specific slash command
+@bot.command(guild = discord.Object(id=guild_id), name = 'ig', description='雨兒的Ig')
 async def slash2(interaction: discord.Interaction):
-    await interaction.response.send_message(f"I am working! I was made with Discord.py!", ephemeral = True) 
+    await interaction.response.send_message("https://www.instagram.com/dear.yumii/") 
+
+@bot.command(guild = discord.Object(id=guild_id), name = 'twitch', description='雨兒的Twitch')
+async def slash2(interaction: discord.Interaction):
+    await interaction.response.send_message("https://www.twitch.tv/imuy_oxo") 
 
 #多選項
 """
@@ -64,7 +68,7 @@ async def slash2(interaction: discord.Interaction):
     app_commands.Choice(name='cherry', value=3),
 ])
 async def fruit(interaction: discord.Interaction, fruits: app_commands.Choice[int]):
-    await interaction.response.send_message(f'Your favourite fruit is {fruits.name}.')
+    await interaction.response.send_message(f'Your favourite fruit is {fruits.name}.', ephemeral = True)
 
 """
 
