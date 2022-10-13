@@ -46,7 +46,8 @@ async def on_message(message: discord.message.Message):
         last_min = (last_hour - int(last_hour)) * 60
         last_seconds = (last_min - int(last_min)) * 60
         channel = client.get_channel(message.channel.id)
-        lastDate = datetime.today().strftime("%Y%m%d") + timedelta(hours=8)
+        lastDate = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        lastDate = datetime.strptime(lastDate, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
         if last_date > 3 and last_date % 2 == 0:
           await channel.send(
             f'<@{target}> 你已經有 {int(last_date)}天 {int(last_hour)}小時 {int(last_min)}分鐘 {int(last_seconds)}秒沒有直播了，我們都很想你，不如開個台吧!'
