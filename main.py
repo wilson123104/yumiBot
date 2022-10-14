@@ -1,9 +1,9 @@
 #導入 Discord.py
 import discord
-from discord import app_commands 
+from discord import Embed, app_commands 
 import configload
 from datetime import datetime, timedelta
-from function import remind
+from function import remind,drawCard
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
 token = configload.getConfigSetting("Credentials", "Token")
@@ -47,8 +47,12 @@ async def slash2(interaction: discord.Interaction):
 async def slash2(interaction: discord.Interaction):
     await interaction.response.send_message("https://www.twitch.tv/imuy_oxo") 
 
-@bot.command(guild = discord.Object(id=guild_id), name = 'remind', description='提醒雨兒開台')
+@bot.command(guild = discord.Object(id=guild_id), name = '提醒', description='提醒雨兒開台')
 async def slash2(interaction: discord.Interaction):
     await remind.remindForInteraction(client,interaction,target)
+
+@bot.command(guild = discord.Object(id=guild_id), name = '抽卡', description='無聊抽卡，聽說雨兒會考慮給獎勵')
+async def slash2(interaction: discord.Interaction):
+    await interaction.response.send_message(embed=drawCard.drawCard(client))
 
 client.run(token)
