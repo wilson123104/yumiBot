@@ -9,7 +9,8 @@ lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
 token = configload.getConfigSetting("Credentials", "Token")
 target = configload.getConfigSetting("Credentials", "TargetUser")
-
+drawLotsHK_room_ID = configload.getConfigSetting("Credentials", "DrawLotsHK_room_ID")
+drawCard_room_ID = configload.getConfigSetting("Credentials", "DrawCard_room_ID")
 class aclient(discord.Client):
     def __init__(self):
         super().__init__(intents = discord.Intents.all())
@@ -54,10 +55,12 @@ async def slash2(interaction: discord.Interaction):
 
 @bot.command(guild = discord.Object(id=guild_id), name = '抽卡', description='無聊抽卡，聽說雨兒會考慮給獎勵')
 async def slash2(interaction: discord.Interaction):
-    await interaction.response.send_message(embed=drawCard.drawCard(client))
+    if interaction.channel_id == int(drawCard_room_ID):
+        await interaction.response.send_message(embed=drawCard.drawCard(client))
 
 @bot.command(guild = discord.Object(id=guild_id), name = '黃大仙求籤', description='香港的求籤')
 async def slash2(interaction: discord.Interaction):
-    await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
+    if interaction.channel_id == int(drawLotsHK_room_ID):
+        await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
 
 client.run(token)
