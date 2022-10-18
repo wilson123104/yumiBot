@@ -1,9 +1,10 @@
 #導入 Discord.py
 import discord
-from discord import Embed, app_commands 
-import configload
+from discord import Embed, app_commands ,Message
+import configload 
 from datetime import datetime, timedelta
-from function import remind,drawCard
+from function import remind,drawCard,drawLotsHK
+from game import uno
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
 token = configload.getConfigSetting("Credentials", "Token")
@@ -54,5 +55,9 @@ async def slash2(interaction: discord.Interaction):
 @bot.command(guild = discord.Object(id=guild_id), name = '抽卡', description='無聊抽卡，聽說雨兒會考慮給獎勵')
 async def slash2(interaction: discord.Interaction):
     await interaction.response.send_message(embed=drawCard.drawCard(client))
+
+@bot.command(guild = discord.Object(id=guild_id), name = '黃大仙求籤', description='香港的求籤')
+async def slash2(interaction: discord.Interaction):
+    await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
 
 client.run(token)

@@ -7,7 +7,6 @@ from db import dbConn
 
 def drawCard(client:discord.Client):
     rNumber = random.randint(1,100)
-    #rNumber = 1
     percentage_list = dbConn.select("*","card_rating","ORDER By percentage ASC")
     count = 0
     index = 0
