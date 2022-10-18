@@ -1,10 +1,9 @@
 #導入 Discord.py
 import discord
-from discord import Embed, app_commands ,Message
+from discord import app_commands
 import configload 
 from datetime import datetime, timedelta
 from function import remind,drawCard,drawLotsHK
-from game import uno
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
 token = configload.getConfigSetting("Credentials", "Token")
