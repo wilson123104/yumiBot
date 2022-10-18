@@ -57,7 +57,7 @@ async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawCard_room_ID):
         await interaction.response.send_message(embed=drawCard.drawCard(client))
 
-@bot.command(guild = discord.Object(id=guild_id), name = '黃大仙求籤', description='香港的求籤')
+@bot.command(guild = discord.Object(id=guild_id), name = '黃大仙求籤', description='香港的黃大仙求籤')
 async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawLotsHK_room_ID):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
