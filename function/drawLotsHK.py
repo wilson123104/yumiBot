@@ -7,7 +7,7 @@ from db import dbConn
 import random
 from function import dcInfoCommands,getTime
 from data import data
-from datetime import datetime, timedelta
+from datetime import datetime
 
 options = []
 thisType_ = ''
@@ -43,7 +43,6 @@ class drawLotsHK(discord.ui.View):
     @discord.ui.select(options=options, placeholder='請選擇求問之事')
     async def draw(self, interaction: discord.Interaction, select: discord.ui.Select):
         userData = dbConn.select("drawLotsHK_last","user",f'where id={interaction.user.id}')
-        print(select.values[0])
         if len(userData) == 0:
             await interaction.response.edit_message(content=f"求{select.values[0]}:\n求籤前先合手，默念「大仙大仙，指點迷津」並說出求籤內容:\n1.中文全名\n2.信男/女\n3.虛齡歲數\n4.稟報求問之事", view=drawLotsHKButtom(type_=select.values[0]))
         else:

@@ -16,13 +16,15 @@ def __db_close():
     __cursor.close()
     __conn.close()
 
-
 def select(select_str:str,from_:str,command:str):
     __conn_db()
     __cursor.execute(f'SELECT {select_str} FROM {from_} {command};')
     list = __cursor.fetchall()
     __db_close()
     return list
+
+def selectUserById(UserId):
+    return select("*","user",f"where id = '{UserId}' ")
 
 def selectToJson(select_str:str,from_:str,command:str) -> dict:
     data = select(select_str,from_,command)

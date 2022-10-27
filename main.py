@@ -4,6 +4,7 @@ from discord import app_commands
 import configload 
 from datetime import datetime, timedelta
 from function import remind,drawCard,drawLotsHK
+from game import truthNoAdventure
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
 token = configload.getConfigSetting("Credentials", "Token")
@@ -62,4 +63,7 @@ async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawLotsHK_room_ID):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
 
+#真心話不冒險
+bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
+    
 client.run(token)
