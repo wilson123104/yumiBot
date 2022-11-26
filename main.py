@@ -3,7 +3,7 @@ import discord
 from discord import app_commands
 import configload 
 from datetime import datetime, timedelta
-from function import remind,drawCard,drawLotsHK
+from function import remind,drawCard,drawLotsHK,customizeRemind
 from game import truthNoAdventure
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
@@ -53,6 +53,11 @@ async def slash2(interaction: discord.Interaction):
 async def slash2(interaction: discord.Interaction):
     await remind.remindForInteraction(client,interaction,target)
 
+@bot.command(guild = discord.Object(id=guild_id), name = '自定義讚美提醒', description='例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。')
+@app_commands.describe(句子='句子')
+async def slash2(interaction: discord.Interaction,句子: str):
+    await customizeRemind.remindForInteraction(client,interaction,target,句子)
+
 @bot.command(guild = discord.Object(id=guild_id), name = '抽卡', description='無聊抽卡，聽說雨兒會考慮給獎勵')
 async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawCard_room_ID):
@@ -64,6 +69,6 @@ async def slash2(interaction: discord.Interaction):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
 
 #真心話不冒險
-bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
+#bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
     
 client.run(token)
