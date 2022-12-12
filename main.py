@@ -2,8 +2,7 @@
 import discord
 from discord import app_commands
 import configload 
-from datetime import datetime, timedelta
-from function import remind,drawCard,drawLotsHK,customizeRemind
+from function import remind,drawCard,drawLotsHK
 from game import truthNoAdventure
 import variable
 
@@ -47,6 +46,8 @@ async def on_message(message: discord.message.Message):
   if message.content == "--v":
     await message.channel.send("版本 1.0.0")
     return
+  
+bot.add_command(remind.remindCommandGroup(name='提醒'),guild= discord.Object(id=guild_id))
 
 @bot.command(guild = discord.Object(id=guild_id), name = 'ig', description='雨兒的Ig')
 async def slash2(interaction: discord.Interaction):
@@ -55,20 +56,6 @@ async def slash2(interaction: discord.Interaction):
 @bot.command(guild = discord.Object(id=guild_id), name = 'twitch', description='雨兒的Twitch')
 async def slash2(interaction: discord.Interaction):
     await interaction.response.send_message("https://www.twitch.tv/imuy_oxo") 
-
-bot.add_command(remind.remindCommandGroup(name='提醒'),guild= discord.Object(id=guild_id))
-
-
-"""
-@bot.command(guild = discord.Object(id=guild_id), name = '提醒', description='提醒雨兒開台')
-async def slash2(interaction: discord.Interaction):
-    await remind.remindForInteraction(client,interaction,target)
-
-@bot.command(guild = discord.Object(id=guild_id), name = '自定義讚美提醒', description='例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。')
-@app_commands.describe(句子='句子')
-async def slash2(interaction: discord.Interaction,句子: str):
-    await customizeRemind.remindForInteraction(client,interaction,target,句子)
-"""
 
 @bot.command(guild = discord.Object(id=guild_id), name = '抽卡', description='無聊抽卡，聽說雨兒會考慮給獎勵')
 async def slash2(interaction: discord.Interaction):
@@ -81,6 +68,6 @@ async def slash2(interaction: discord.Interaction):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
 
 #真心話不冒險
-bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
+#bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
     
 client.run(token)

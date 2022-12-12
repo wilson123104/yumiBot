@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from db import dbConn
 import discord
 import variable
-from discord import CategoryChannel, Member, Message, TextChannel, User, VoiceChannel, app_commands
+from discord import app_commands
 
 last_date: float
 getChannel = 1022166337734324236
@@ -32,9 +32,6 @@ class remindCommandGroup(app_commands.Group):
     @app_commands.command(name='自定義',description='例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。')
     async def customizeRemind(self, interaction: discord.Interaction, 句子: str) -> None:
         await interaction.response.send_message(await customizeToString(variable.client,variable.target,句子))
-
-
-
 
 async def toString(client: discord.Client,target:str):
     global last_date
