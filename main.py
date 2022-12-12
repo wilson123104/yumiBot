@@ -5,6 +5,8 @@ import configload
 from datetime import datetime, timedelta
 from function import remind,drawCard,drawLotsHK,customizeRemind
 from game import truthNoAdventure
+import variable
+
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
 token = configload.getConfigSetting("Credentials", "Token")
@@ -26,6 +28,10 @@ class aclient(discord.Client):
 client = aclient()
 bot = app_commands.CommandTree(client)
 
+variable.setClient(client)
+variable.setToken(token)
+variable.setTarget(target)
+
 #當有訊息時
 @client.event
 async def on_message(message: discord.message.Message):
@@ -33,10 +39,11 @@ async def on_message(message: discord.message.Message):
   if message.author == client.user:
     return
 
+  """
   if message.author.id == int(target) and datetime.today().strftime("%Y%m%d") != lastDate:
     lastDate = (datetime.now()+timedelta(hours=8)).strftime("%Y%m%d")
     await remind.remindForMessage(client,message,target)
-
+  """
   if message.content == "--v":
     await message.channel.send("版本 1.0.0")
     return
@@ -49,6 +56,10 @@ async def slash2(interaction: discord.Interaction):
 async def slash2(interaction: discord.Interaction):
     await interaction.response.send_message("https://www.twitch.tv/imuy_oxo") 
 
+bot.add_command(remind.remindCommandGroup(name='提醒'),guild= discord.Object(id=guild_id))
+
+
+"""
 @bot.command(guild = discord.Object(id=guild_id), name = '提醒', description='提醒雨兒開台')
 async def slash2(interaction: discord.Interaction):
     await remind.remindForInteraction(client,interaction,target)
@@ -57,6 +68,7 @@ async def slash2(interaction: discord.Interaction):
 @app_commands.describe(句子='句子')
 async def slash2(interaction: discord.Interaction,句子: str):
     await customizeRemind.remindForInteraction(client,interaction,target,句子)
+"""
 
 @bot.command(guild = discord.Object(id=guild_id), name = '抽卡', description='無聊抽卡，聽說雨兒會考慮給獎勵')
 async def slash2(interaction: discord.Interaction):
@@ -69,6 +81,6 @@ async def slash2(interaction: discord.Interaction):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
 
 #真心話不冒險
-#bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
+bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
     
 client.run(token)
