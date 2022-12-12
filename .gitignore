@@ -2,4 +2,4 @@ config.ini
 test.py
 test2.py
 game/uno.py
-db/card.db
+db/card.db.zip
