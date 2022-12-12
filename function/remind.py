@@ -3,19 +3,22 @@ from db import dbConn
 import discord
 import variable
 from discord import app_commands
+import configload 
 
 last_date: float
-getChannel = 1022166337734324236
-botId = 375805687529209857
+getChannel = int(configload.getConfigSetting("Credentials", "GetChannel"))
+botId = int(configload.getConfigSetting("Credentials", "BotId"))
 
 @app_commands.guild_only()
 class remindCommandGroup(app_commands.Group):
     
     @app_commands.command(name='雨兒開台',description="提醒雨兒開台")
     async def remindOpen(client: discord.Client, interaction: discord.Interaction) -> None:
+
         await remindForInteraction(variable.client,interaction,variable.target)
 
-    @app_commands.command(name='取代',description="取代原本的提醒句子。例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。")
+    @app_commands.command(name='取代',description="取代原本的提醒句子。")
+    @app_commands.describe(句子='例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。')
     async def replace(self, interaction: discord.Interaction, 句子: str) -> None:
         if len(dbConn.selectUserById(interaction.user.id)) == 0:
             dbConn.insertItem('user','id,name',f'{interaction.user.id},"{str(interaction.user)}"')
@@ -29,11 +32,13 @@ class remindCommandGroup(app_commands.Group):
         dbConn.update('user','remind = Null',f'id = "{interaction.user.id}"')
         await interaction.response.send_message("還完成功",ephemeral=True)
 
-    @app_commands.command(name='自定義',description='例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。')
+    @app_commands.command(name='自定義',description='自定義提醒雨兒開台')
+    @app_commands.describe(句子='例子：{奴才}/{雨兒}你他媽的已經{時間}沒開台了，快點開台。')
     async def customizeRemind(self, interaction: discord.Interaction, 句子: str) -> None:
         await interaction.response.send_message(await customizeToString(variable.client,variable.target,句子))
 
 async def toString(client: discord.Client,target:str):
+    
     global last_date
     channel = client.get_channel(getChannel)
     async for msg in channel.history(limit=10):
