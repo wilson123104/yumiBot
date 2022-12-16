@@ -79,8 +79,9 @@ async def customizeToString(client: discord.Client,target:str,string:str):
 
 async def remindForInteraction(client: discord.Client,interaction: discord.Interaction,target:str):
   remind = dbConn.select('remind','user',f'where id = "{interaction.user.id}"')
-  if remind [0][0] != None and remind [0][0] != '':
-    await interaction.response.send_message(await customizeToString(client,target,remind[0][0]))
+  if len(remind) > 0:
+    if remind [0][0] != None and remind [0][0] != '':
+      await interaction.response.send_message(await customizeToString(client,target,remind[0][0]))
   else :
     await interaction.response.send_message(await toString(client,target))
 

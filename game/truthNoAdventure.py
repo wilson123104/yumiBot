@@ -401,8 +401,8 @@ class TruthNoAdventureCommandGroup(app_commands.Group):
     @app_commands.command(name='創建房間')
     @app_commands.describe(題目選項='題目選項')
     @app_commands.choices(題目選項=[
-        app_commands.Choice(name='現在沒得你選我懶了', value=0),
-        #app_commands.Choice(name='自由出題', value=1),
+        app_commands.Choice(name='使用題庫', value=0),
+        app_commands.Choice(name='自由出題', value=1),
     ])
     async def openRoom(self, interaction: discord.Interaction,題目選項: app_commands.Choice[int]) -> None:
         isRoomowner = RoomDataDef.isRoomowner(interaction.user.id)
@@ -496,6 +496,9 @@ class ReadyToStart(discord.ui.View):
     async def ready(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if not RoomDataDef.isOnPlayRoom(interaction.channel_id):
             await interaction.response.send_message("你不在真心話不冒險的文字頻道",ephemeral=True)
+        elif RoomDataDef.getRoomownerRoom(interaction.user.id):
+            if RoomDataDef.getRoomownerRoom(interaction.user.id).textChannel.id == interaction.channel_id:
+                await interaction.response.send_message("你是房主不用準備",ephemeral=True)
         elif not RoomDataDef.isMember(interaction.user.id):
             await interaction.response.send_message("請先加入",ephemeral=True)
         elif RoomDataDef.isMember(interaction.user.id) and RoomDataDef.getMemberRoom(interaction.user.id).textChannel.id != interaction.channel_id:
@@ -512,6 +515,9 @@ class ReadyToStart(discord.ui.View):
     async def cancelReady(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if not RoomDataDef.isOnPlayRoom(interaction.channel_id):
             await interaction.response.send_message("你不在真心話不冒險的文字頻道",ephemeral=True)
+        elif RoomDataDef.getRoomownerRoom(interaction.user.id):
+            if RoomDataDef.getRoomownerRoom(interaction.user.id).textChannel.id == interaction.channel_id:
+                await interaction.response.send_message("你是房主不能取消準備",ephemeral=True)
         elif not RoomDataDef.isMember(interaction.user.id):
             await interaction.response.send_message("請先加入",ephemeral=True)
         elif RoomDataDef.isMember(interaction.user.id) and RoomDataDef.getMemberRoom(interaction.user.id).textChannel.id != interaction.channel_id:
