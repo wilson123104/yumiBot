@@ -2,7 +2,7 @@
 import discord
 from discord import app_commands
 import configload 
-from function import remind,drawCard,drawLotsHK
+from function import remind,drawCard,drawLotsHK, posterBoard
 from game import truthNoAdventure
 import variable
 
@@ -66,6 +66,8 @@ async def slash2(interaction: discord.Interaction):
 async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawLotsHK_room_ID):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
+
+bot.add_command(posterBoard.posterBoardCommandGroup(name='貼堂文'),guild= discord.Object(id=guild_id))
 
 #真心話不冒險
 #bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))

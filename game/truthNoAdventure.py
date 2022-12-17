@@ -397,7 +397,6 @@ rooms = []
 
 @app_commands.guild_only()
 class TruthNoAdventureCommandGroup(app_commands.Group):
-
     @app_commands.command(name='創建房間')
     @app_commands.describe(題目選項='題目選項')
     @app_commands.choices(題目選項=[
