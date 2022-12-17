@@ -14,7 +14,6 @@ class remindCommandGroup(app_commands.Group):
     
     @app_commands.command(name='雨兒開台',description="提醒雨兒開台")
     async def remindOpen(client: discord.Client, interaction: discord.Interaction) -> None:
-
         await remindForInteraction(variable.client,interaction,variable.target)
 
     @app_commands.command(name='取代',description="取代原本的提醒句子。")
@@ -82,6 +81,8 @@ async def remindForInteraction(client: discord.Client,interaction: discord.Inter
   if len(remind) > 0:
     if remind [0][0] != None and remind [0][0] != '':
       await interaction.response.send_message(await customizeToString(client,target,remind[0][0]))
+    else:
+      await interaction.response.send_message(await toString(client,target))
   else :
     await interaction.response.send_message(await toString(client,target))
 
