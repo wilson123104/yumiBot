@@ -37,9 +37,7 @@ variable.setTarget(target)
 @client.event
 async def on_message(message: discord.message.Message):
     global lastDate
-    if message.author == client.user:
-        return
-    if message.channel.id == int(textChannel):
+    if message.guild.id == int(guild_id):
         user = dbConn.selectUserById(message.author.id)
         if len(user) != 0:
             dbConn.update("user",f"textCount = {user[0][4]+1}",f"id = {user[0][0]}")
