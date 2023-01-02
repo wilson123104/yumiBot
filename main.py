@@ -5,6 +5,7 @@ import configload
 from function import remind,drawCard,drawLotsHK, posterBoard
 from game import truthNoAdventure
 import variable
+from db import dbConn
 
 lastDate = ''
 guild_id = configload.getConfigSetting("Credentials", "Guild_id")
@@ -12,6 +13,7 @@ token = configload.getConfigSetting("Credentials", "Token")
 target = configload.getConfigSetting("Credentials", "TargetUser")
 drawLotsHK_room_ID = configload.getConfigSetting("Credentials", "DrawLotsHK_room_ID")
 drawCard_room_ID = configload.getConfigSetting("Credentials", "DrawCard_room_ID")
+textChannel = configload.getConfigSetting("Credentials", "TextChannel")
 class aclient(discord.Client):
     def __init__(self):
         super().__init__(intents = discord.Intents.all())
@@ -34,18 +36,24 @@ variable.setTarget(target)
 #當有訊息時
 @client.event
 async def on_message(message: discord.message.Message):
-  global lastDate
-  if message.author == client.user:
-    return
+    global lastDate
+    if message.author == client.user:
+        return
+    if message.channel.id == int(textChannel):
+        user = dbConn.selectUserById(message.author.id)
+        if len(user) != 0:
+            dbConn.update("user",f"textCount = {user[0][4]+1}",f"id = {user[0][0]}")
+        else :
+            dbConn.insert("user (id,name,textCount)",f"'{message.author.id}','{message.author}',1")
+    """
+    if message.author.id == int(target) and datetime.today().strftime("%Y%m%d") != lastDate:
+        lastDate = (datetime.now()+timedelta(hours=8)).strftime("%Y%m%d")
+        await remind.remindForMessage(client,message,target)
+    if message.content == "--v":
+        await message.channel.send("版本 1.0.0")
+        return
+    """
 
-  """
-  if message.author.id == int(target) and datetime.today().strftime("%Y%m%d") != lastDate:
-    lastDate = (datetime.now()+timedelta(hours=8)).strftime("%Y%m%d")
-    await remind.remindForMessage(client,message,target)
-  """
-  if message.content == "--v":
-    await message.channel.send("版本 1.0.0")
-    return
   
 bot.add_command(remind.remindCommandGroup(name='提醒'),guild= discord.Object(id=guild_id))
 
@@ -61,15 +69,38 @@ async def slash2(interaction: discord.Interaction):
 async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawCard_room_ID):
         await interaction.response.send_message(embed=drawCard.drawCard(client))
+    else:
+        await interaction.response.send_message("請在輸入vip888十連抽頻道使用這指令",ephemeral=True)
 
 @bot.command(guild = discord.Object(id=guild_id), name = '黃大仙求籤', description='香港的黃大仙求籤')
 async def slash2(interaction: discord.Interaction):
     if interaction.channel_id == int(drawLotsHK_room_ID):
         await interaction.response.send_message(view=drawLotsHK.drawLotsHK())
+    else:
+        await interaction.response.send_message("請在雨神廟頻道使用這指令",ephemeral=True)
 
 bot.add_command(posterBoard.posterBoardCommandGroup(name='貼堂文'),guild= discord.Object(id=guild_id))
 
+@bot.context_menu(name="信息次數",guild= discord.Object(id=guild_id))
+async def test(interaction: discord.Interaction,user:discord.Member):
+    selectUser = dbConn.selectUserById(user.id)
+    channel = client.get_channel(int(textChannel))
+    if interaction.channel_id == int(textChannel):
+        if len(selectUser) != 0:
+            if selectUser[0][4] != 0:
+                await interaction.response.send_message(f"從2023年1月3日到現在已經講過{selectUser[0][4]}句話。")
+            else:
+                await interaction.response.send_message("從2023年1月3日到現在沒有講過話。")
+        else:
+            await interaction.response.send_message("從2023年1月3日到現在沒有講過話。")
+            
+    else:
+        await interaction.response.send_message(f"請在{channel.name}頻道使用這指令",ephemeral=True)
+
+
+
 #真心話不冒險
 #bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
-    
+
 client.run(token)
+
