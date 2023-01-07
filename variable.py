@@ -1,7 +1,11 @@
 import discord
+import configload 
+
 client: discord.Client
 token:str
 target:str
+textChannel = configload.getConfigSetting("Credentials", "TextChannel")
+chatAICookie = configload.getConfigSetting("Credentials", "ChatAICookie")
 
 def setClient(client1):
     global client 

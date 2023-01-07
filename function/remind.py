@@ -59,7 +59,11 @@ async def customizeToString(client: discord.Client,target:str,string:str):
     global last_date
     channel = client.get_channel(getChannel)
     async for msg in channel.history(limit=10):
+      print(msg.created_at)
+
       if msg.author.id == botId:
+        print(msg.created_at)
+
         time_1 = str(msg.created_at).split(".")[0]
         time_2 = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         time_1_struct = datetime.strptime(
@@ -73,6 +77,7 @@ async def customizeToString(client: discord.Client,target:str,string:str):
         string = string.replace("{奴才}",f'<@{target}>')
         string = string.replace("{雨兒}",f'<@{target}>')
         string = string.replace("{時間}",f'{int(last_date)}天 {int(last_hour)}小時 {int(last_min)}分鐘 {int(last_seconds)}秒')
+        print(string)
         return string
 
 

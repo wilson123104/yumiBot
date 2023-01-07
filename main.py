@@ -2,7 +2,7 @@
 import discord
 from discord import app_commands
 import configload 
-from function import remind,drawCard,drawLotsHK, posterBoard
+from function import context, remind,drawCard,drawLotsHK, posterBoard
 from game import truthNoAdventure
 import variable
 from db import dbConn
@@ -37,12 +37,13 @@ variable.setTarget(target)
 @client.event
 async def on_message(message: discord.message.Message):
     global lastDate
-    if message.guild.id == int(guild_id):
-        user = dbConn.selectUserById(message.author.id)
-        if len(user) != 0:
-            dbConn.update("user",f"textCount = {user[0][4]+1}",f"id = {user[0][0]}")
-        else :
-            dbConn.insert("user (id,name,textCount)",f"'{message.author.id}','{message.author}',1")
+    if message.guild:
+        if message.guild.id == int(guild_id):
+            user = dbConn.selectUserById(message.author.id)
+            if len(user) != 0:
+                dbConn.update("user",f"textCount = {user[0][4]+1}",f"id = {user[0][0]}")
+            else :
+                dbConn.insert("user (id,name,textCount)",f"'{message.author.id}','{message.author}',1")
     """
     if message.author.id == int(target) and datetime.today().strftime("%Y%m%d") != lastDate:
         lastDate = (datetime.now()+timedelta(hours=8)).strftime("%Y%m%d")
@@ -80,27 +81,12 @@ async def slash2(interaction: discord.Interaction):
 bot.add_command(posterBoard.posterBoardCommandGroup(name='貼堂文'),guild= discord.Object(id=guild_id))
 
 @bot.context_menu(name="信息次數",guild= discord.Object(id=guild_id))
-async def test(interaction: discord.Interaction,user:discord.Member):
-    selectUser = dbConn.selectUserById(user.id)
-    channel = client.get_channel(int(textChannel))
-    name = ""
-    if user.nick == None:
-        name = user.name
-    else:
-        name = user.nick
-    if interaction.channel_id == int(textChannel):
-        if len(selectUser) != 0:
-            if selectUser[0][4] != 0:
-                await interaction.response.send_message(f"{name}從2023年1月3日到現在已經講過{selectUser[0][4]}句話。")
-            else:
-                await interaction.response.send_message(f"{name}從2023年1月3日到現在沒有講過話。")
-        else:
-            await interaction.response.send_message(f"{name}從2023年1月3日到現在沒有講過話。")
-            
-    else:
-        await interaction.response.send_message(f"請在{channel.name}頻道使用這指令",ephemeral=True)
+async def contextText(interaction: discord.Interaction,user:discord.Member):
+    await context.getContextText(interaction,user)
 
-
+@bot.command(guild = discord.Object(id=guild_id), name = '聊天ai', description='openAI chatGPT')
+async def chat(interaction: discord.Interaction, 對話: str):
+    return
 
 #真心話不冒險
 #bot.add_command(truthNoAdventure.TruthNoAdventureCommandGroup(name='真心話不冒險'),guild= discord.Object(id=guild_id))
